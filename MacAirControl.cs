@@ -181,7 +181,7 @@ namespace MacAirControl
                 }
 
                 IsConnected = true;
-                StatusMessage = IsMmio ? "APPLE T2 SMC // MMIO ONLINE" : "APPLE SMC // PORT I/O ONLINE";
+                StatusMessage = IsMmio ? "T2 SMC Controller Online (MMIO)" : "SMC Controller Online (Port I/O)";
                 return true;
             }
             catch (Exception ex)
@@ -882,14 +882,14 @@ namespace MacAirControl
             _cfg = AppConfig.Load();
             _smc = new AppleSmcClient();
 
-            Title = "MacBook Air Control Center // Gotham Gold Edition";
-            Width = 1040;
-            Height = 820;
-            MinWidth = 900;
-            MinHeight = 680;
+            Title = "T2 Hardware Control Center";
+            Width = 1050;
+            Height = 840;
+            MinWidth = 920;
+            MinHeight = 700;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            // Custom Borderless Apple × Cyberpunk Glass Window
+            // Custom Borderless Dark Gold Window
             WindowStyle = WindowStyle.None;
             AllowsTransparency = true;
             Background = Brushes.Transparent;
@@ -957,11 +957,11 @@ namespace MacAirControl
         }
 
         // =====================================================================
-        // Complete UI Construction (Dark Gotham × WayneTech Gold × Apple × Afterburner)
+        // Complete UI Construction (Clean Dark Gold Hardware Control Center)
         // =====================================================================
         private void BuildCyberDeckUi()
         {
-            // Outer Window Frame with Brushed Gotham Gold Gradient Border
+            // Outer Window Frame with Brushed Gold Gradient Border
             LinearGradientBrush frameBorderBrush = new LinearGradientBrush
             {
                 StartPoint = new Point(0, 0),
@@ -990,7 +990,7 @@ namespace MacAirControl
             DockPanel rootDock = new DockPanel();
 
             // -----------------------------------------------------------------
-            // 1. TOP TITLE BAR (macOS Traffic Lights + Gotham Gold HUD Status)
+            // 1. TOP TITLE BAR (Window Controls + Live Hardware Status)
             // -----------------------------------------------------------------
             Border titleBar = new Border
             {
@@ -1017,12 +1017,12 @@ namespace MacAirControl
             titleGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             titleGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            // Left: macOS Traffic Light Buttons + Brand Title
+            // Left: Window Controls + Application Title
             StackPanel spLeftTitle = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
 
-            spLeftTitle.Children.Add(CreateTrafficLightButton(Color.FromRgb(255, 95, 86), "Hide to System Tray", () => HideToTray()));
-            spLeftTitle.Children.Add(CreateTrafficLightButton(Color.FromRgb(255, 189, 46), "Minimize Window", () => WindowState = WindowState.Minimized));
-            spLeftTitle.Children.Add(CreateTrafficLightButton(Color.FromRgb(39, 201, 63), "Maximize / Restore", () =>
+            spLeftTitle.Children.Add(CreateTrafficLightButton(Color.FromRgb(255, 95, 86), "Minimize to System Tray", () => HideToTray()));
+            spLeftTitle.Children.Add(CreateTrafficLightButton(Color.FromRgb(255, 189, 46), "Minimize to Taskbar", () => WindowState = WindowState.Minimized));
+            spLeftTitle.Children.Add(CreateTrafficLightButton(Color.FromRgb(39, 201, 63), "Maximize / Restore Window", () =>
             {
                 WindowState = (WindowState == WindowState.Maximized) ? WindowState.Normal : WindowState.Maximized;
             }));
@@ -1040,23 +1040,24 @@ namespace MacAirControl
             StackPanel spTitleRow = new StackPanel { Orientation = Orientation.Horizontal };
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = " MACBOOK AIR ",
-                FontSize = 16,
+                Text = "T2 HARDWARE CONTROL CENTER ",
+                FontSize = 15.5,
                 FontWeight = FontWeights.Bold,
                 Foreground = TextPrimary
             });
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = "// GOTHAM GOLD AFTERBURNER",
-                FontSize = 16,
-                FontWeight = FontWeights.Bold,
-                Foreground = AccentBlue
+                Text = " //  THERMAL, PROCESSOR & BATTERY",
+                FontSize = 14,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = AccentBlue,
+                VerticalAlignment = VerticalAlignment.Bottom
             });
             spTitleText.Children.Add(spTitleRow);
 
             _txtSmcStatus = new TextBlock
             {
-                Text = _smc.StatusMessage + "  •  MacBookAir9,1 (Core i5-1030NG7)",
+                Text = _smc.StatusMessage + "  •  MacBookAir9,1 (Intel Core i5-1030NG7)",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
                 FontSize = 11,
                 Foreground = _smc.IsConnected ? AccentGreen : AccentAmber,
@@ -1068,18 +1069,18 @@ namespace MacAirControl
             Grid.SetColumn(spLeftTitle, 0);
             titleGrid.Children.Add(spLeftTitle);
 
-            // Right: Live HUD Status Pills + Minimize to Tray Button
+            // Right: Live Status Badges + Minimize to Tray Button
             StackPanel spRightHud = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
 
-            _txtTopPowerBadge = CreateHudPillBadge("FAN: SMART CURVE", ColMagenta);
-            _txtTopTurboBadge = CreateHudPillBadge("TURBO: SWEET SPOT", ColCyan);
-            _txtTopBattBadge  = CreateHudPillBadge("ALDENTE: 80% CAP", ColGreen);
+            _txtTopPowerBadge = CreateHudPillBadge("Fan: Smart Curve", ColMagenta);
+            _txtTopTurboBadge = CreateHudPillBadge("Turbo: Balanced", ColCyan);
+            _txtTopBattBadge  = CreateHudPillBadge("Battery Limit: 80%", ColGreen);
 
             spRightHud.Children.Add((UIElement)_txtTopPowerBadge.Parent);
             spRightHud.Children.Add((UIElement)_txtTopTurboBadge.Parent);
             spRightHud.Children.Add((UIElement)_txtTopBattBadge.Parent);
 
-            Button btnTrayMinimize = CreateCyberButton("▼ TRAY", false, ColCyan);
+            Button btnTrayMinimize = CreateCyberButton("Hide to Tray", false, ColCyan);
             btnTrayMinimize.Padding = new Thickness(12, 6, 12, 6);
             btnTrayMinimize.Margin = new Thickness(8, 0, 0, 0);
             btnTrayMinimize.Click += (s, e) => HideToTray();
@@ -1093,7 +1094,7 @@ namespace MacAirControl
             rootDock.Children.Add(titleBar);
 
             // -----------------------------------------------------------------
-            // 2. SEGMENTED NAVIGATION TAB BAR (Gotham Dark Gold Pill Tabs)
+            // 2. SEGMENTED NAVIGATION TAB BAR
             // -----------------------------------------------------------------
             Border navBar = new Border
             {
@@ -1106,10 +1107,10 @@ namespace MacAirControl
             UniformGrid navGrid = new UniformGrid { Columns = 4 };
             string[] tabTitles = new string[]
             {
-                "⚡ 01 // COCKPIT & HUD",
-                "🌀 02 // TURBINE & FAN CURVE",
-                "🚀 03 // TURBO & CORES",
-                "🔋 04 // ALDENTE BATTERY"
+                "1. Overview & Dashboard",
+                "2. Cooling & Fan Curve",
+                "3. Processor & Turbo Boost",
+                "4. Battery Health & Startup"
             };
 
             _tabButtons = new Button[4];
@@ -1150,17 +1151,17 @@ namespace MacAirControl
             DockPanel footerDock = new DockPanel();
             TextBlock txtFooterLeft = new TextBlock
             {
-                Text = "APPLE T2 HARDWARE CONTROLLER  •  ZERO TRIAL LIMITS  •  SINGLE-CLICK TRAY ICON TO TOGGLE",
-                FontFamily = new FontFamily("Consolas, Segoe UI"),
-                FontSize = 10.5,
+                Text = "Direct T2 SMC Hardware Interface  •  Click the System Tray temperature icon anytime to show or hide",
+                FontFamily = new FontFamily("Segoe UI"),
+                FontSize = 11,
                 Foreground = TextMuted,
                 VerticalAlignment = VerticalAlignment.Center
             };
             TextBlock txtFooterRight = new TextBlock
             {
-                Text = "GOTHAM GOLD EDITION × WINDOWS 10 LTSC // DRAG CORNER TO RESIZE ◢",
-                FontFamily = new FontFamily("Consolas, Segoe UI"),
-                FontSize = 10.5,
+                Text = "Drag bottom-right corner to resize ◢",
+                FontFamily = new FontFamily("Segoe UI"),
+                FontSize = 11,
                 Foreground = new SolidColorBrush(Color.FromArgb(200, 229, 184, 66)),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center
@@ -1231,23 +1232,23 @@ namespace MacAirControl
         }
 
         // =====================================================================
-        // TAB 1: MSI AFTERBURNER COCKPIT & LIVE TELEMETRY MATRIX
+        // TAB 1: OVERVIEW & SYSTEM DASHBOARD
         // =====================================================================
         private UIElement BuildTab1Cockpit()
         {
             StackPanel stack = new StackPanel();
 
-            // --- A. MSI AFTERBURNER DUAL RADIAL COCKPIT + WAVEFORM CENTER ---
-            Border cockpitCard = CreateCyberCard("MSI AFTERBURNER // DUAL HARDWARE COCKPIT & REAL-TIME TELEMETRY", ColCyan);
+            // --- A. DUAL HARDWARE GAUGES + LIVE 60S MONITOR ---
+            Border cockpitCard = CreateCyberCard("SYSTEM OVERVIEW  —  LIVE TEMPERATURES, COOLING & QUICK PROFILES", ColCyan);
             StackPanel spCockpit = (StackPanel)cockpitCard.Child;
 
-            Grid dialGrid = new Grid { Margin = new Thickness(0, 6, 0, 4) };
+            Grid dialGrid = new Grid { Margin = new Thickness(0, 4, 0, 6) };
             dialGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(230) });
             dialGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             dialGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(230) });
 
             // Left Dial: CPU Core & Clock
-            _dialCpu = new AfterburnerDialControl("CPU CORE & CLOCK", "°C", ColCyan);
+            _dialCpu = new AfterburnerDialControl("PROCESSOR TEMP", "°C", ColCyan);
             Grid.SetColumn(_dialCpu, 0);
             dialGrid.Children.Add(_dialCpu);
 
@@ -1268,7 +1269,7 @@ namespace MacAirControl
             DockPanel waveHeader = new DockPanel { Margin = new Thickness(0, 0, 0, 6) };
             waveHeader.Children.Add(new TextBlock
             {
-                Text = "LIVE HARDWARE MONITOR (60S TRACE)",
+                Text = "60-SECOND LIVE TELEMETRY HISTORY",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
                 FontSize = 11,
                 FontWeight = FontWeights.Bold,
@@ -1277,8 +1278,8 @@ namespace MacAirControl
 
             StackPanel spLegend = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
             spLegend.Children.Add(CreateLegendDot("CPU °C", ColCyan));
-            spLegend.Children.Add(CreateLegendDot("FAN %", ColMagenta));
-            spLegend.Children.Add(CreateLegendDot("LOAD %", ColGreen));
+            spLegend.Children.Add(CreateLegendDot("Fan %", ColMagenta));
+            spLegend.Children.Add(CreateLegendDot("Load %", ColGreen));
             waveHeader.Children.Add(spLegend);
             spCenter.Children.Add(waveHeader);
 
@@ -1289,18 +1290,18 @@ namespace MacAirControl
                 BorderBrush = new SolidColorBrush(Color.FromArgb(65, 212, 175, 55)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(6),
-                Height = 112,
+                Height = 104,
                 ClipToBounds = true
             };
-            _waveformCanvas = new Canvas { Height = 112 };
+            _waveformCanvas = new Canvas { Height = 104 };
             _waveformCanvas.SizeChanged += (s, e) => DrawWaveformGraph();
             waveFrame.Child = _waveformCanvas;
             spCenter.Children.Add(waveFrame);
 
-            // Instant Afterburner Profile Preset Bar
+            // Quick Profile Preset Bar
             TextBlock lblPresets = new TextBlock
             {
-                Text = "INSTANT GOTHAM PROFILES (ONE-CLICK FAN + TURBO PRESETS):",
+                Text = "QUICK SYSTEM PROFILES (ONE-CLICK COOLING + PROCESSOR PRESETS):",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
                 FontSize = 10.5,
                 FontWeight = FontWeights.Bold,
@@ -1310,9 +1311,9 @@ namespace MacAirControl
             spCenter.Children.Add(lblPresets);
 
             UniformGrid presetBar = new UniformGrid { Columns = 3 };
-            _btnQuickSilent = CreateCyberButton("🌙 SILENT ECO (1.1 GHz)", false, ColCyan);
-            _btnQuickSweet  = CreateCyberButton("⚡ SWEET SPOT (2.2 GHz)", true, ColGreen);
-            _btnQuickOverdrive = CreateCyberButton("🔥 MAX OVERDRIVE (3.5 GHz)", false, ColMagenta);
+            _btnQuickSilent    = CreateCyberButton("Silent Eco (1.1 GHz)\nQuiet & Cool Battery", false, ColCyan);
+            _btnQuickSweet     = CreateCyberButton("Balanced (2.2 GHz)\nRecommended Daily Use", true, ColGreen);
+            _btnQuickOverdrive = CreateCyberButton("Max Performance (3.5 GHz)\nFull Speed + High Cooling", false, ColMagenta);
 
             _btnQuickSilent.Margin = new Thickness(0, 0, 4, 0);
             _btnQuickSweet.Margin = new Thickness(2, 0, 2, 0);
@@ -1332,15 +1333,20 @@ namespace MacAirControl
             dialGrid.Children.Add(centerWaveCard);
 
             // Right Dial: Exhaust Fan RPM & Target
-            _dialFan = new AfterburnerDialControl("EXHAUST TURBINE", "RPM", ColMagenta);
+            _dialFan = new AfterburnerDialControl("COOLING FAN", "RPM", ColMagenta);
             Grid.SetColumn(_dialFan, 2);
             dialGrid.Children.Add(_dialFan);
 
             spCockpit.Children.Add(dialGrid);
+            spCockpit.Children.Add(CreateSettingGuideBox(
+                "How Quick Profiles Work:",
+                "• Silent Eco (1.1 GHz): Disables Processor Turbo Boost so the laptop runs cool, silent, and uses minimal battery power.\n" +
+                "• Balanced (2.2 GHz — Recommended): Caps processor boost at 2.2 GHz and uses the Smart Fan Curve. Prevents overheating and avoids the 400 MHz thermal slowdown while keeping apps fast.\n" +
+                "• Max Performance (3.5 GHz): Unlocks the full 3.5 GHz processor speed and ramps the cooling fan earlier (55°C–78°C) for heavy tasks."));
             stack.Children.Add(cockpitCard);
 
-            // --- B. QUICK MASTER TOGGLE DECK (Gotham Gold Pill Switches) ---
-            Border quickDeckCard = CreateCyberCard("MASTER HARDWARE TOGGLE SWITCHES // INSTANT OVERRIDES", ColPurple);
+            // --- B. ESSENTIAL HARDWARE TOGGLES ---
+            Border quickDeckCard = CreateCyberCard("ESSENTIAL HARDWARE CONTROLS  —  DIRECT ON / OFF SWITCHES", ColPurple);
             StackPanel spQuickDeck = (StackPanel)quickDeckCard.Child;
 
             UniformGrid toggleGrid = new UniformGrid { Columns = 3, Margin = new Thickness(0, 4, 0, 0) };
@@ -1348,15 +1354,15 @@ namespace MacAirControl
             _tglDashSmartFan = new CyberToggleSwitch(_cfg.FanMode == "Curve", ColMagenta);
             _tglDashSmartFan.Toggled += (on) => SetFanMode(on ? "Curve" : "Auto");
             toggleGrid.Children.Add(CreateToggleCard(
-                "SMART FAN CURVE",
-                "Proactive T2 cooling (" + _cfg.CurveMinTemp + "°C–" + _cfg.CurveMaxTemp + "°C)",
+                "Smart Fan Curve",
+                "ON = Smoothly increases fan speed between " + _cfg.CurveMinTemp + "°C and " + _cfg.CurveMaxTemp + "°C before heat builds up. OFF = Default factory fan control.",
                 _tglDashSmartFan, ColMagenta));
 
             _tglDashTurboBoost = new CyberToggleSwitch(_activeTurboMode != "Off", ColCyan);
             _tglDashTurboBoost.Toggled += (on) => ApplyTurboMode(on ? "Sweet" : "Off");
             toggleGrid.Children.Add(CreateToggleCard(
-                "INTEL TURBO BOOST",
-                "ON = 2.2 GHz Sweet Spot  •  OFF = 1.1 GHz Silent",
+                "Processor Turbo Boost",
+                "ON = Enables 2.2 GHz Balanced Boost for snappy performance. OFF = Locks CPU to 1.1 GHz base speed for silent, cool operation.",
                 _tglDashTurboBoost, ColCyan));
 
             _tglDashBattCap = new CyberToggleSwitch(_cfg.BatteryCapEnabled, ColGreen);
@@ -1367,29 +1373,29 @@ namespace MacAirControl
                 ApplyBatteryCap(!on);
             };
             toggleGrid.Children.Add(CreateToggleCard(
-                "ALDENTE 80% CHARGE CAP",
-                "Hardware SMC BCLM battery health limiter",
+                "80% Battery Charge Limit",
+                "ON = Stops charging at 80% when plugged into wall power to protect long-term battery health. OFF = Charges to 100%.",
                 _tglDashBattCap, ColGreen));
 
             spQuickDeck.Children.Add(toggleGrid);
             stack.Children.Add(quickDeckCard);
 
-            // --- C. 5-SENSOR APPLE T2 THERMAL MATRIX + CLOCK/LOAD STRIP ---
-            Border sensorCard = CreateCyberCard("APPLE T2 SMC // 5-ZONE THERMAL & FREQUENCY TELEMETRY MATRIX", ColGreen);
+            // --- C. 5-SENSOR THERMAL MATRIX + CLOCK/LOAD STRIP ---
+            Border sensorCard = CreateCyberCard("HARDWARE TEMPERATURE SENSORS & PROCESSOR SPEED", ColGreen);
             StackPanel spSensors = (StackPanel)sensorCard.Child;
 
             UniformGrid sensorGrid = new UniformGrid { Columns = 5, Margin = new Thickness(0, 4, 0, 8) };
-            _txtCpuTemp   = AddSensorMatrixTile(sensorGrid, "CPU CORE PECI", "TCXC", "-- °C", ColCyan, out _barCpuTemp);
+            _txtCpuTemp   = AddSensorMatrixTile(sensorGrid, "PROCESSOR CORE", "TCXC", "-- °C", ColCyan, out _barCpuTemp);
             _txtProxTemp  = AddSensorMatrixTile(sensorGrid, "CPU HEATSINK", "TC0P", "-- °C", ColGreen, out _barProxTemp);
-            _txtBoardTemp = AddSensorMatrixTile(sensorGrid, "LOGIC BOARD", "TW0P", "-- °C", ColGreen, out _barBoardTemp);
-            _txtBattTemp  = AddSensorMatrixTile(sensorGrid, "SMART BATTERY", "TB0T", "-- °C", ColAmber, out _barBattTemp);
+            _txtBoardTemp = AddSensorMatrixTile(sensorGrid, "MAINBOARD / WI-FI", "TW0P", "-- °C", ColGreen, out _barBoardTemp);
+            _txtBattTemp  = AddSensorMatrixTile(sensorGrid, "BATTERY PACK", "TB0T", "-- °C", ColAmber, out _barBattTemp);
             _txtPalmTemp  = AddSensorMatrixTile(sensorGrid, "PALM REST", "Ts0P", "-- °C", ColCyan, out _barPalmTemp);
             spSensors.Children.Add(sensorGrid);
 
             UniformGrid subStats = new UniformGrid { Columns = 3 };
-            _txtCpuClock = AddSubHudBar(subStats, "LIVE CPU FREQUENCY", "-- MHz (-- GHz)", ColCyan);
-            _txtCpuLoad  = AddSubHudBar(subStats, "TOTAL PROCESSOR LOAD", "--%", ColGreen);
-            _txtFanRpm   = AddSubHudBar(subStats, "EXHAUST TURBINE SPEED", "-- RPM", ColMagenta);
+            _txtCpuClock = AddSubHudBar(subStats, "LIVE PROCESSOR CLOCK", "-- MHz (-- GHz)", ColCyan);
+            _txtCpuLoad  = AddSubHudBar(subStats, "PROCESSOR UTILIZATION", "--%", ColGreen);
+            _txtFanRpm   = AddSubHudBar(subStats, "COOLING FAN SPEED", "-- RPM", ColMagenta);
             spSensors.Children.Add(subStats);
 
             stack.Children.Add(sensorCard);
@@ -1397,31 +1403,37 @@ namespace MacAirControl
         }
 
         // =====================================================================
-        // TAB 2: TURBINE & INTERACTIVE FAN CURVE EDITOR
+        // TAB 2: COOLING & INTERACTIVE FAN CURVE
         // =====================================================================
         private UIElement BuildTab2FanCurve()
         {
             StackPanel stack = new StackPanel();
 
-            Border card = CreateCyberCard("EXHAUST TURBINE CONTROLLER // MACS FAN CONTROL REPLACEMENT", ColMagenta);
+            Border card = CreateCyberCard("COOLING FAN CONTROLLER & TEMPERATURE RESPONSE CURVE", ColMagenta);
             StackPanel sp = (StackPanel)card.Child;
 
             _txtFanTargetInfo = new TextBlock
             {
-                Text = "Active Fan Mode: Smart Curve (60°C – 85°C)",
+                Text = "Active Fan Mode: Smart Temperature Curve (60°C – 85°C)",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
                 FontSize = 13.5,
                 FontWeight = FontWeights.Bold,
                 Foreground = AccentMagenta,
-                Margin = new Thickness(4, 2, 0, 12)
+                Margin = new Thickness(4, 2, 0, 10)
             };
             sp.Children.Add(_txtFanTargetInfo);
 
+            sp.Children.Add(CreateSettingGuideBox(
+                "Understanding the 3 Fan Cooling Modes:",
+                "• Smart Temperature Curve (Recommended): Keeps the fan at its quietest speed (2700 RPM) until the processor reaches your Start Temperature (e.g. 60°C), then smoothly increases fan speed up to 100% (8000 RPM) at your Maximum Temperature (e.g. 85°C). This cools the heatsink proactively before heat builds up.\n" +
+                "• Default Firmware Auto: Uses the built-in hardware fan curve, which waits until the processor is very hot (~90°C) before spinning up the fan.\n" +
+                "• Manual Constant Speed: Locks the fan at a single fixed RPM speed that you choose below."));
+
             // 3 Mode Selector Buttons
-            UniformGrid modeGrid = new UniformGrid { Columns = 3, Margin = new Thickness(0, 0, 0, 14) };
-            _btnFanCurve  = CreateCyberButton("📈 SMART TEMP CURVE\nDynamic Ramp (60°C – 85°C)", true, ColMagenta);
-            _btnFanAuto   = CreateCyberButton(" APPLE SMC AUTO\nStock Firmware Control", false, ColCyan);
-            _btnFanManual = CreateCyberButton("🎛️ MANUAL CONSTANT RPM\nFixed Turbine Speed", false, ColAmber);
+            UniformGrid modeGrid = new UniformGrid { Columns = 3, Margin = new Thickness(0, 6, 0, 14) };
+            _btnFanCurve  = CreateCyberButton("Smart Temperature Curve\nSmooth Automatic Ramp (Recommended)", true, ColMagenta);
+            _btnFanAuto   = CreateCyberButton("Default Firmware Auto\nStandard Built-In Hardware Control", false, ColCyan);
+            _btnFanManual = CreateCyberButton("Manual Constant Speed\nLock Fan to a Fixed RPM", false, ColAmber);
 
             _btnFanCurve.Margin = new Thickness(0, 0, 6, 0);
             _btnFanAuto.Margin = new Thickness(3, 0, 3, 0);
@@ -1449,14 +1461,14 @@ namespace MacAirControl
             StackPanel spGraph = new StackPanel();
             spGraph.Children.Add(new TextBlock
             {
-                Text = "LIVE RESPONSE CURVE // CYBERDECK THERMAL MAPPING (X = CPU °C, Y = TURBINE RPM, DOT = LIVE OPERATING POINT)",
+                Text = "VISUAL FAN CURVE  (Horizontal = Processor Temperature °C,  Vertical = Fan Speed RPM,  Gold Dot = Current Live State)",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
                 FontSize = 11,
                 FontWeight = FontWeights.Bold,
                 Foreground = TextMuted,
                 Margin = new Thickness(0, 0, 0, 8)
             });
-            _fanCurveCanvas = new Canvas { Height = 165, ClipToBounds = true };
+            _fanCurveCanvas = new Canvas { Height = 160, ClipToBounds = true };
             _fanCurveCanvas.SizeChanged += (s, e) => DrawFanCurveGraph();
             spGraph.Children.Add(_fanCurveCanvas);
             graphBox.Child = spGraph;
@@ -1475,15 +1487,22 @@ namespace MacAirControl
 
             // Row 1: Min Temp Slider
             DockPanel dpMin = new DockPanel { Margin = new Thickness(0, 0, 0, 12) };
-            dpMin.Children.Add(new TextBlock
+            StackPanel spMinLabel = new StackPanel { Width = 290, VerticalAlignment = VerticalAlignment.Center };
+            spMinLabel.Children.Add(new TextBlock
             {
-                Text = "RAMP START TEMP (2700 RPM BASE):",
-                Width = 250,
+                Text = "1. Ramp Start Temperature (2700 RPM):",
                 FontWeight = FontWeights.Bold,
-                Foreground = TextPrimary,
-                VerticalAlignment = VerticalAlignment.Center
+                Foreground = TextPrimary
             });
-            StackPanel spMinBtns = new StackPanel { Orientation = Orientation.Horizontal };
+            spMinLabel.Children.Add(new TextBlock
+            {
+                Text = "Below this temp, fan stays at quiet minimum speed.",
+                FontSize = 10.5,
+                Foreground = TextMuted
+            });
+            dpMin.Children.Add(spMinLabel);
+
+            StackPanel spMinBtns = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
             DockPanel.SetDock(spMinBtns, Dock.Right);
             spMinBtns.Children.Add(CreateStepperButton("-5°C", () => AdjustCurveTemp(true, -5)));
             _txtCurveMinVal = new TextBlock
@@ -1527,15 +1546,22 @@ namespace MacAirControl
 
             // Row 2: Max Temp Slider
             DockPanel dpMax = new DockPanel();
-            dpMax.Children.Add(new TextBlock
+            StackPanel spMaxLabel = new StackPanel { Width = 290, VerticalAlignment = VerticalAlignment.Center };
+            spMaxLabel.Children.Add(new TextBlock
             {
-                Text = "MAX BLAST TEMP (8000 RPM MAX):",
-                Width = 250,
+                Text = "2. Maximum Cooling Temperature (8000 RPM):",
                 FontWeight = FontWeights.Bold,
-                Foreground = TextPrimary,
-                VerticalAlignment = VerticalAlignment.Center
+                Foreground = TextPrimary
             });
-            StackPanel spMaxBtns = new StackPanel { Orientation = Orientation.Horizontal };
+            spMaxLabel.Children.Add(new TextBlock
+            {
+                Text = "At or above this temp, fan runs at 100% full speed.",
+                FontSize = 10.5,
+                Foreground = TextMuted
+            });
+            dpMax.Children.Add(spMaxLabel);
+
+            StackPanel spMaxBtns = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
             DockPanel.SetDock(spMaxBtns, Dock.Right);
             spMaxBtns.Children.Add(CreateStepperButton("-5°C", () => AdjustCurveTemp(false, -5)));
             _txtCurveMaxVal = new TextBlock
@@ -1594,7 +1620,7 @@ namespace MacAirControl
             DockPanel dpManual = new DockPanel { Margin = new Thickness(0, 0, 0, 12) };
             dpManual.Children.Add(new TextBlock
             {
-                Text = "MANUAL TURBINE TARGET SPEED:",
+                Text = "Fixed Fan Speed Target (RPM):",
                 Width = 230,
                 FontWeight = FontWeights.Bold,
                 Foreground = TextPrimary,
@@ -1637,10 +1663,10 @@ namespace MacAirControl
             spManual.Children.Add(dpManual);
 
             UniformGrid rpmPresets = new UniformGrid { Columns = 4 };
-            rpmPresets.Children.Add(CreateStepperButton("SILENT (2700 RPM)", () => _sldManualRpm.Value = _fanMinRpm));
-            rpmPresets.Children.Add(CreateStepperButton("CRUISE (4200 RPM)", () => _sldManualRpm.Value = 4200));
-            rpmPresets.Children.Add(CreateStepperButton("COOLING (5800 RPM)", () => _sldManualRpm.Value = 5800));
-            rpmPresets.Children.Add(CreateStepperButton("MAX BLAST (" + (int)_fanMaxRpm + " RPM)", () => _sldManualRpm.Value = _fanMaxRpm));
+            rpmPresets.Children.Add(CreateStepperButton("Quiet (2700 RPM)", () => _sldManualRpm.Value = _fanMinRpm));
+            rpmPresets.Children.Add(CreateStepperButton("Medium (4200 RPM)", () => _sldManualRpm.Value = 4200));
+            rpmPresets.Children.Add(CreateStepperButton("High (5800 RPM)", () => _sldManualRpm.Value = 5800));
+            rpmPresets.Children.Add(CreateStepperButton("Maximum (" + (int)_fanMaxRpm + " RPM)", () => _sldManualRpm.Value = _fanMaxRpm));
             spManual.Children.Add(rpmPresets);
 
             _pnlFanManualSettings.Child = spManual;
@@ -1651,19 +1677,19 @@ namespace MacAirControl
         }
 
         // =====================================================================
-        // TAB 3: TURBO BOOST & PER-CORE DIE TELEMETRY
+        // TAB 3: PROCESSOR & TURBO BOOST
         // =====================================================================
         private UIElement BuildTab3TurboAndCores()
         {
             StackPanel stack = new StackPanel();
 
-            Border cardTurbo = CreateCyberCard("INTEL SPEEDSHIFT & TURBO BOOST // OVERCLOCK / THERMAL SWEET SPOT", ColAmber);
+            Border cardTurbo = CreateCyberCard("PROCESSOR CLOCK SPEED & TURBO BOOST MANAGEMENT", ColAmber);
             StackPanel spTurbo = (StackPanel)cardTurbo.Child;
 
-            DockPanel dpMasterTurbo = new DockPanel { Margin = new Thickness(4, 0, 4, 12) };
+            DockPanel dpMasterTurbo = new DockPanel { Margin = new Thickness(4, 0, 4, 10) };
             _txtTurboDetail = new TextBlock
             {
-                Text = "Active Profile: Sweet Spot Boost (2.2 GHz AC / 1.8 GHz Battery)",
+                Text = "Active Profile: Balanced Sweet Spot (2.2 GHz AC / 1.8 GHz Battery)",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
                 FontSize = 13.5,
                 FontWeight = FontWeights.Bold,
@@ -1674,7 +1700,7 @@ namespace MacAirControl
             DockPanel.SetDock(spMasterSwitch, Dock.Right);
             spMasterSwitch.Children.Add(new TextBlock
             {
-                Text = "MASTER TURBO BOOST:",
+                Text = "ENABLE TURBO BOOST:",
                 FontSize = 11.5,
                 FontWeight = FontWeights.Bold,
                 Foreground = TextMuted,
@@ -1689,10 +1715,17 @@ namespace MacAirControl
             dpMasterTurbo.Children.Add(_txtTurboDetail);
             spTurbo.Children.Add(dpMasterTurbo);
 
-            UniformGrid turboGrid = new UniformGrid { Columns = 3 };
-            _btnTurboOff   = CreateCyberButton("🌙 TURBO OFF (1.1 GHz BASE)\nUltra-Cool & Silent  •  Max Battery Life", false, ColCyan);
-            _btnTurboSweet = CreateCyberButton("⚡ SWEET SPOT (2.2 GHz AC / 1.8 DC)\nRecommended  •  Zero 400 MHz Throttling", true, ColGreen);
-            _btnTurboFull  = CreateCyberButton("🔥 FULL BOOST (3.5 GHz MAX)\nUncapped Clock  •  Peak Burst Speed", false, ColAmber);
+            spTurbo.Children.Add(CreateSettingGuideBox(
+                "Why Processor Clock Speed Control Matters:",
+                "• Thin laptops have compact heatsinks. If the processor boosts to its full 3.5 GHz continuously, heat builds up faster than the fan can remove it, causing the motherboard to force a sudden 400 MHz thermal slowdown.\n" +
+                "• Turbo Boost Off (1.1 GHz Base): Runs at the base 1.1 GHz clock speed. Keeps the laptop cool to the touch, keeps the fan silent, and maximizes battery runtime.\n" +
+                "• Balanced Sweet Spot (2.2 GHz AC / 1.8 GHz Battery — Recommended): Gives you fast, responsive Turbo Boost while staying within safe thermal limits so the laptop never throttles down to 400 MHz.\n" +
+                "• Full Uncapped Boost (Up to 3.5 GHz): Allows maximum factory boost speed for short, demanding workloads. Runs significantly warmer and louder."));
+
+            UniformGrid turboGrid = new UniformGrid { Columns = 3, Margin = new Thickness(0, 6, 0, 0) };
+            _btnTurboOff   = CreateCyberButton("Turbo Boost Off (1.1 GHz Base)\nSilent, Cool & Longest Battery Life", false, ColCyan);
+            _btnTurboSweet = CreateCyberButton("Balanced Sweet Spot (2.2 GHz)\nRecommended  •  Fast & No Throttling", true, ColGreen);
+            _btnTurboFull  = CreateCyberButton("Full Uncapped Boost (3.5 GHz)\nMaximum Clock Speed  •  High Heat", false, ColAmber);
 
             _btnTurboOff.Margin = new Thickness(0, 0, 6, 0);
             _btnTurboSweet.Margin = new Thickness(3, 0, 3, 0);
@@ -1710,16 +1743,20 @@ namespace MacAirControl
             stack.Children.Add(cardTurbo);
 
             // Per-Core & Die Sensors Card
-            Border cardCores = CreateCyberCard("INTEL CORE i5-1030NG7 // INDIVIDUAL CORE & GPU DIE TEMPERATURES", ColCyan);
+            Border cardCores = CreateCyberCard("INDIVIDUAL PROCESSOR CORE & GRAPHICS TEMPERATURES", ColCyan);
             StackPanel spCores = (StackPanel)cardCores.Child;
 
-            UniformGrid coreGrid = new UniformGrid { Columns = 3, Margin = new Thickness(0, 4, 0, 0) };
-            _txtCore1   = AddSensorMatrixTile(coreGrid, "CPU CORE 1 DIE", "TC1C", "-- °C", ColCyan, out _barCore1);
-            _txtCore2   = AddSensorMatrixTile(coreGrid, "CPU CORE 2 DIE", "TC2C", "-- °C", ColCyan, out _barCore2);
-            _txtCore3   = AddSensorMatrixTile(coreGrid, "CPU CORE 3 DIE", "TC3C", "-- °C", ColCyan, out _barCore3);
-            _txtCore4   = AddSensorMatrixTile(coreGrid, "CPU CORE 4 DIE", "TC4C", "-- °C", ColCyan, out _barCore4);
-            _txtGpuTemp = AddSensorMatrixTile(coreGrid, "IRIS PLUS GPU DIE", "TCGC", "-- °C", ColMagenta, out _barGpuTemp);
-            _txtSaTemp  = AddSensorMatrixTile(coreGrid, "SYSTEM AGENT DIE", "TCSA", "-- °C", ColGreen, out _barSaTemp);
+            spCores.Children.Add(CreateSettingGuideBox(
+                "What These Sensors Measure:",
+                "Displays live temperatures inside each of the 4 physical processor cores (TC1C–TC4C), the integrated Iris Plus graphics processor (TCGC), and the on-die system controller (TCSA)."));
+
+            UniformGrid coreGrid = new UniformGrid { Columns = 3, Margin = new Thickness(0, 6, 0, 0) };
+            _txtCore1   = AddSensorMatrixTile(coreGrid, "PROCESSOR CORE 1", "TC1C", "-- °C", ColCyan, out _barCore1);
+            _txtCore2   = AddSensorMatrixTile(coreGrid, "PROCESSOR CORE 2", "TC2C", "-- °C", ColCyan, out _barCore2);
+            _txtCore3   = AddSensorMatrixTile(coreGrid, "PROCESSOR CORE 3", "TC3C", "-- °C", ColCyan, out _barCore3);
+            _txtCore4   = AddSensorMatrixTile(coreGrid, "PROCESSOR CORE 4", "TC4C", "-- °C", ColCyan, out _barCore4);
+            _txtGpuTemp = AddSensorMatrixTile(coreGrid, "INTEGRATED GRAPHICS", "TCGC", "-- °C", ColMagenta, out _barGpuTemp);
+            _txtSaTemp  = AddSensorMatrixTile(coreGrid, "SYSTEM CONTROLLER", "TCSA", "-- °C", ColGreen, out _barSaTemp);
 
             spCores.Children.Add(coreGrid);
             stack.Children.Add(cardCores);
@@ -1728,36 +1765,40 @@ namespace MacAirControl
         }
 
         // =====================================================================
-        // TAB 4: ALDENTE BATTERY CHARGE LIMITER & WINDOWS STARTUP
+        // TAB 4: BATTERY HEALTH & STARTUP SETTINGS
         // =====================================================================
         private UIElement BuildTab4BatteryAndSystem()
         {
             StackPanel stack = new StackPanel();
 
-            Border cardBatt = CreateCyberCard("ALDENTE HARDWARE BATTERY LIMITER // T2 SMC CHARGE MANAGEMENT", ColGreen);
+            Border cardBatt = CreateCyberCard("HARDWARE BATTERY CHARGE LIMITER & HEALTH MONITOR", ColGreen);
             StackPanel spBatt = (StackPanel)cardBatt.Child;
 
             _txtBattStatusLine = new TextBlock
             {
                 Text = "Battery Charge: --%   •   Checking status...",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
-                FontSize = 16,
+                FontSize = 15.5,
                 FontWeight = FontWeights.Bold,
                 Foreground = AccentGreen,
                 Margin = new Thickness(2, 2, 0, 4)
             };
             _txtBattSmcState = new TextBlock
             {
-                Text = "Hardware SMC Limit (BCLM): 80%",
+                Text = "Hardware SMC Charge Ceiling (BCLM): 80%",
                 FontFamily = new FontFamily("Consolas, Segoe UI"),
                 FontSize = 12,
                 Foreground = TextMuted,
-                Margin = new Thickness(2, 0, 0, 12)
+                Margin = new Thickness(2, 0, 0, 10)
             };
             spBatt.Children.Add(_txtBattStatusLine);
             spBatt.Children.Add(_txtBattSmcState);
 
-            // Visual 20-Cell Gotham Gold Battery Pack Bar
+            spBatt.Children.Add(CreateSettingGuideBox(
+                "Why Limit Battery Charging to 80%?",
+                "Lithium-ion batteries age fastest when kept at 100% charge while warm—especially if you use your laptop plugged into an external monitor all day. Setting an 80% hardware charge limit tells the onboard power controller to stop charging at 80% and power the laptop directly from the wall adapter, greatly reducing battery wear. If you plan to travel, click 'Charge to 100%' anytime."));
+
+            // Visual 20-Cell Battery Pack Bar
             Border battBarBox = new Border
             {
                 Background = new SolidColorBrush(Color.FromArgb(245, 6, 7, 10)),
@@ -1765,14 +1806,14 @@ namespace MacAirControl
                 BorderThickness = new Thickness(1.2),
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(12, 10, 12, 10),
-                Margin = new Thickness(0, 0, 0, 14)
+                Margin = new Thickness(0, 6, 0, 14)
             };
             _battVisualCanvas = new Canvas { Height = 36, ClipToBounds = true };
             _battVisualCanvas.SizeChanged += (s, e) => DrawBatteryVisualBar(GetCurrentBatteryPercent());
             battBarBox.Child = _battVisualCanvas;
             spBatt.Children.Add(battBarBox);
 
-            // AlDente Slider + Steppers + Top Up to 100% Row
+            // Charge Limit Slider + Steppers + Charge to 100% Row
             Border capCtrlBox = new Border
             {
                 Background = SubCardBg,
@@ -1783,16 +1824,22 @@ namespace MacAirControl
                 Margin = new Thickness(0, 0, 0, 14)
             };
             DockPanel dpCap = new DockPanel();
-            dpCap.Children.Add(new TextBlock
+            StackPanel spCapLbl = new StackPanel { Width = 250, VerticalAlignment = VerticalAlignment.Center };
+            spCapLbl.Children.Add(new TextBlock
             {
-                Text = "ALDENTE TARGET CHARGE CEILING:",
-                Width = 235,
+                Text = "Maximum Charge Limit (%):",
                 FontWeight = FontWeights.Bold,
-                Foreground = TextPrimary,
-                VerticalAlignment = VerticalAlignment.Center
+                Foreground = TextPrimary
             });
+            spCapLbl.Children.Add(new TextBlock
+            {
+                Text = "Recommended: 80% for daily desk use.",
+                FontSize = 10.5,
+                Foreground = TextMuted
+            });
+            dpCap.Children.Add(spCapLbl);
 
-            StackPanel spCapRight = new StackPanel { Orientation = Orientation.Horizontal };
+            StackPanel spCapRight = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
             DockPanel.SetDock(spCapRight, Dock.Right);
             spCapRight.Children.Add(CreateStepperButton("-5%", () => AdjustBatteryCap(-5)));
             _txtBattCapTarget = new TextBlock
@@ -1809,7 +1856,7 @@ namespace MacAirControl
             spCapRight.Children.Add(_txtBattCapTarget);
             spCapRight.Children.Add(CreateStepperButton("+5%", () => AdjustBatteryCap(+5)));
 
-            _btnBattTopUp100 = CreateCyberButton("⚡ TOP UP TO 100%", false, ColAmber);
+            _btnBattTopUp100 = CreateCyberButton("Charge to 100%", false, ColAmber);
             _btnBattTopUp100.Margin = new Thickness(12, 0, 0, 0);
             _btnBattTopUp100.Padding = new Thickness(14, 7, 14, 7);
             _btnBattTopUp100.Click += (s, e) =>
@@ -1843,18 +1890,18 @@ namespace MacAirControl
             capCtrlBox.Child = dpCap;
             spBatt.Children.Add(capCtrlBox);
 
-            // 4 T2 Smart Battery Telemetry Tiles
+            // 4 Smart Battery Telemetry Tiles
             UniformGrid battTiles = new UniformGrid { Columns = 4, Margin = new Thickness(0, 0, 0, 4) };
-            _txtBattTilePct    = AddSubHudBar(battTiles, "CHARGE (BRSC)", "--%", ColGreen);
-            _txtBattTileBclm   = AddSubHudBar(battTiles, "SMC LIMIT (BCLM)", "80%", ColCyan);
-            _txtBattTileCycles = AddSubHudBar(battTiles, "CYCLES (B0CT)", "--", ColAmber);
-            _txtBattTileVolt   = AddSubHudBar(battTiles, "VOLTAGE (B0AV)", "-- V", ColMagenta);
+            _txtBattTilePct    = AddSubHudBar(battTiles, "CURRENT CHARGE", "--%", ColGreen);
+            _txtBattTileBclm   = AddSubHudBar(battTiles, "HARDWARE LIMIT", "80%", ColCyan);
+            _txtBattTileCycles = AddSubHudBar(battTiles, "CHARGE CYCLES", "--", ColAmber);
+            _txtBattTileVolt   = AddSubHudBar(battTiles, "BATTERY VOLTAGE", "-- V", ColMagenta);
             spBatt.Children.Add(battTiles);
 
             stack.Children.Add(cardBatt);
 
             // System & Startup Toggle Switches Card
-            Border cardSys = CreateCyberCard("SYSTEM & AUTOMATION TOGGLES // WINDOWS 10 LTSC INTEGRATION", ColCyan);
+            Border cardSys = CreateCyberCard("WINDOWS STARTUP & SAFETY SETTINGS", ColCyan);
             StackPanel spSys = (StackPanel)cardSys.Child;
 
             UniformGrid sysToggles = new UniformGrid { Columns = 3, Margin = new Thickness(0, 4, 0, 0) };
@@ -1867,23 +1914,23 @@ namespace MacAirControl
                 ApplyBatteryCap(!on);
             };
             sysToggles.Children.Add(CreateToggleCard(
-                "ENABLE HARDWARE CHARGE CAP",
-                "Write target ceiling directly to Apple T2 BCLM & CH0B",
+                "Enable Charge Limit",
+                "ON = Stops battery charging at your chosen percentage (e.g. 80%). OFF = Allows charging all the way to 100%.",
                 _tglBattCap, ColGreen));
 
             SetAutoStart(true);
             _tglStartWithWindows = new CyberToggleSwitch(IsAutoStartRegistered(), ColCyan);
             _tglStartWithWindows.Toggled += (on) => SetAutoStart(on);
             sysToggles.Children.Add(CreateToggleCard(
-                "AUTO-START WITH WINDOWS",
-                "Starts minimized in Tray on AC & Battery (No UAC nag)",
+                "Start with Windows",
+                "ON = Automatically starts minimized in the system tray when you log in (works on both AC and battery without prompts).",
                 _tglStartWithWindows, ColCyan));
 
             _tglSafetyReset = new CyberToggleSwitch(_cfg.SafetyResetOnExit, ColAmber);
             _tglSafetyReset.Toggled += (on) => { _cfg.SafetyResetOnExit = on; _cfg.Save(); };
             sysToggles.Children.Add(CreateToggleCard(
-                "BOOT CAMP SHUTDOWN SAFETY",
-                "Release charge inhibit on Shutdown if battery < 25%",
+                "Low-Battery Shutdown Safety",
+                "ON = Automatically re-enables normal charging on shutdown if the battery is below 25%, so it can always charge while off.",
                 _tglSafetyReset, ColAmber));
 
             spSys.Children.Add(sysToggles);
@@ -2246,6 +2293,38 @@ namespace MacAirControl
             return b;
         }
 
+        private Border CreateSettingGuideBox(string title, string description)
+        {
+            Border box = new Border
+            {
+                Background = new SolidColorBrush(Color.FromArgb(210, 12, 14, 18)),
+                BorderBrush = new SolidColorBrush(Color.FromArgb(70, 212, 175, 55)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(8),
+                Padding = new Thickness(14, 10, 14, 10),
+                Margin = new Thickness(2, 4, 2, 10)
+            };
+            StackPanel sp = new StackPanel();
+            sp.Children.Add(new TextBlock
+            {
+                Text = title,
+                FontSize = 11.5,
+                FontWeight = FontWeights.Bold,
+                Foreground = AccentGreen,
+                Margin = new Thickness(0, 0, 0, 3)
+            });
+            sp.Children.Add(new TextBlock
+            {
+                Text = description,
+                FontSize = 11.2,
+                Foreground = TextMuted,
+                TextWrapping = TextWrapping.Wrap,
+                LineHeight = 16.5
+            });
+            box.Child = sp;
+            return box;
+        }
+
         private Border CreateToggleCard(string title, string subtitle, CyberToggleSwitch toggle, Color accent)
         {
             Border tile = new Border
@@ -2267,7 +2346,7 @@ namespace MacAirControl
                 Text = title,
                 FontSize = 12,
                 FontWeight = FontWeights.Bold,
-                Foreground = Brushes.White
+                Foreground = TextPrimary
             });
             sp.Children.Add(new TextBlock
             {
@@ -2335,7 +2414,7 @@ namespace MacAirControl
             };
             sp.Children.Add(lblVal);
 
-            // Mini Neon Thermal Progress Track
+            // Mini Thermal Progress Track
             Border track = new Border
             {
                 Height = 5,
@@ -2464,29 +2543,29 @@ namespace MacAirControl
                 Font = new Drawing.Font("Segoe UI", 10f)
             };
 
-            var itemOpen = _trayMenu.Items.Add("Open MacBook Air Gotham Gold Control Center", null, (s, e) => RestoreFromTray());
+            var itemOpen = _trayMenu.Items.Add("Open T2 Hardware Control Center", null, (s, e) => RestoreFromTray());
             itemOpen.Font = new Drawing.Font("Segoe UI", 10f, Drawing.FontStyle.Bold);
             _trayMenu.Items.Add(new WinForms.ToolStripSeparator());
 
             _trayMenu.Items.Add("Fan: Smart Curve (60°C – 85°C)", null, (s, e) => SetFanMode("Curve"));
-            _trayMenu.Items.Add("Fan: Apple SMC Auto", null, (s, e) => SetFanMode("Auto"));
+            _trayMenu.Items.Add("Fan: Default Firmware Auto", null, (s, e) => SetFanMode("Auto"));
             _trayMenu.Items.Add("Fan: Constant 4200 RPM", null, (s, e) => { _sldManualRpm.Value = 4200; SetFanMode("Manual"); });
-            _trayMenu.Items.Add("Fan: Full Blast (" + (int)_fanMaxRpm + " RPM)", null, (s, e) => { _sldManualRpm.Value = _fanMaxRpm; SetFanMode("Manual"); });
+            _trayMenu.Items.Add("Fan: Maximum (" + (int)_fanMaxRpm + " RPM)", null, (s, e) => { _sldManualRpm.Value = _fanMaxRpm; SetFanMode("Manual"); });
             _trayMenu.Items.Add(new WinForms.ToolStripSeparator());
 
-            _trayMenu.Items.Add("Turbo: Sweet Spot (2.2 GHz AC / 1.8 GHz Batt)", null, (s, e) => ApplyTurboMode("Sweet"));
-            _trayMenu.Items.Add("Turbo: OFF (1.1 GHz Silent / Max Battery)", null, (s, e) => ApplyTurboMode("Off"));
-            _trayMenu.Items.Add("Turbo: Full Boost (3.5 GHz Max)", null, (s, e) => ApplyTurboMode("Full"));
+            _trayMenu.Items.Add("Processor: Balanced Sweet Spot (2.2 GHz AC / 1.8 GHz Batt)", null, (s, e) => ApplyTurboMode("Sweet"));
+            _trayMenu.Items.Add("Processor: Turbo Off (1.1 GHz Silent / Max Battery)", null, (s, e) => ApplyTurboMode("Off"));
+            _trayMenu.Items.Add("Processor: Full Uncapped Boost (3.5 GHz Max)", null, (s, e) => ApplyTurboMode("Full"));
             _trayMenu.Items.Add(new WinForms.ToolStripSeparator());
 
-            _trayMenu.Items.Add("Battery: Enable 80% Cap (AlDente)", null, (s, e) =>
+            _trayMenu.Items.Add("Battery: Enable 80% Charge Limit", null, (s, e) =>
             {
                 _cfg.BatteryCapEnabled = true;
                 _cfg.BatteryCapPct = 80;
                 _cfg.Save();
                 ApplyBatteryCap(false);
             });
-            _trayMenu.Items.Add("Battery: Top Up to 100%", null, (s, e) =>
+            _trayMenu.Items.Add("Battery: Charge to 100%", null, (s, e) =>
             {
                 _cfg.BatteryCapEnabled = false;
                 _cfg.Save();
@@ -2494,7 +2573,7 @@ namespace MacAirControl
             });
             _trayMenu.Items.Add(new WinForms.ToolStripSeparator());
 
-            _trayMenu.Items.Add("Quit MacBook Air Control Center", null, (s, e) =>
+            _trayMenu.Items.Add("Quit T2 Hardware Control Center", null, (s, e) =>
             {
                 _allowClose = true;
                 Close();
@@ -2502,7 +2581,7 @@ namespace MacAirControl
 
             _trayIcon = new WinForms.NotifyIcon
             {
-                Text = "MacBook Air Control Center",
+                Text = "T2 Hardware Control Center",
                 Visible = true,
                 ContextMenuStrip = _trayMenu
             };
@@ -2536,7 +2615,7 @@ namespace MacAirControl
         private void HideToTray()
         {
             Hide();
-            _trayIcon.ShowBalloonTip(1200, "MacBook Air Control Center",
+            _trayIcon.ShowBalloonTip(1200, "T2 Hardware Control Center",
                 "Running in the system tray. Click the tray temperature icon anytime to open.",
                 WinForms.ToolTipIcon.Info);
         }
@@ -2609,7 +2688,8 @@ namespace MacAirControl
 
             if (_txtTopPowerBadge != null)
             {
-                _txtTopPowerBadge.Text = "FAN: " + _cfg.FanMode.ToUpperInvariant();
+                string modeLabel = _cfg.FanMode == "Curve" ? "Smart Curve" : (_cfg.FanMode == "Auto" ? "Firmware Auto" : "Manual RPM");
+                _txtTopPowerBadge.Text = "Fan: " + modeLabel;
             }
             _suppressSliderEvents = false;
         }
@@ -2638,7 +2718,7 @@ namespace MacAirControl
             {
                 _lastTargetRpm = _lastFanRpm;
                 _smc.WriteByte("F0Md", 0);
-                _txtFanTargetInfo.Text = string.Format("ACTIVE MODE: APPLE SMC FIRMWARE AUTO  •  BOUNDS: {0:0} – {1:0} RPM", _fanMinRpm, _fanMaxRpm);
+                _txtFanTargetInfo.Text = string.Format("Active Fan Mode: Default Firmware Auto  •  Hardware Range: {0:0} – {1:0} RPM", _fanMinRpm, _fanMaxRpm);
             }
             else if (_cfg.FanMode == "Manual")
             {
@@ -2646,7 +2726,7 @@ namespace MacAirControl
                 _lastTargetRpm = target;
                 _smc.WriteByte("F0Md", 1);
                 _smc.WriteFloatOrFpe2("F0Tg", target);
-                _txtFanTargetInfo.Text = string.Format("ACTIVE MODE: MANUAL CONSTANT TURBINE SPEED ({0} RPM)", target);
+                _txtFanTargetInfo.Text = string.Format("Active Fan Mode: Manual Constant Speed ({0} RPM)", target);
             }
             else
             {
@@ -2667,7 +2747,7 @@ namespace MacAirControl
                 _lastTargetRpm = targetRpm;
                 _smc.WriteByte("F0Md", 1);
                 _smc.WriteFloatOrFpe2("F0Tg", targetRpm);
-                _txtFanTargetInfo.Text = string.Format("ACTIVE MODE: SMART CURVE ({0}°C – {1}°C)  •  TARGET: {2:0} RPM  •  BOUNDS: {3:0}–{4:0} RPM",
+                _txtFanTargetInfo.Text = string.Format("Active Fan Mode: Smart Curve ({0}°C – {1}°C)  •  Current Target: {2:0} RPM  •  Range: {3:0}–{4:0} RPM",
                     _cfg.CurveMinTemp, _cfg.CurveMaxTemp, targetRpm, _fanMinRpm, _fanMaxRpm);
             }
         }
@@ -2745,26 +2825,26 @@ namespace MacAirControl
 
             if (_activeTurboMode == "Off")
             {
-                _txtTurboDetail.Text = "ACTIVE PROFILE: TURBO BOOST OFF (1.1 GHz BASE CLOCK — ULTRA COOL & SILENT)";
+                _txtTurboDetail.Text = "Active Profile: Turbo Boost Off (1.1 GHz Base Speed — Cool & Silent)";
                 _txtTurboDetail.Foreground = AccentBlue;
-                if (_txtTopTurboBadge != null) _txtTopTurboBadge.Text = "TURBO: OFF (1.1 GHz)";
+                if (_txtTopTurboBadge != null) _txtTopTurboBadge.Text = "Turbo: Off (1.1 GHz)";
             }
             else if (_activeTurboMode == "Sweet")
             {
-                _txtTurboDetail.Text = "ACTIVE PROFILE: SWEET SPOT BOOST (2.2 GHz AC / 1.8 GHz BATT — ZERO THROTTLING)";
+                _txtTurboDetail.Text = "Active Profile: Balanced Sweet Spot (2.2 GHz AC / 1.8 GHz Battery — No Throttling)";
                 _txtTurboDetail.Foreground = AccentGreen;
-                if (_txtTopTurboBadge != null) _txtTopTurboBadge.Text = "TURBO: SWEET SPOT";
+                if (_txtTopTurboBadge != null) _txtTopTurboBadge.Text = "Turbo: Balanced";
             }
             else
             {
-                _txtTurboDetail.Text = "ACTIVE PROFILE: FULL OVERDRIVE BOOST (3.5 GHz UNCAPPED — PEAK PERFORMANCE)";
+                _txtTurboDetail.Text = "Active Profile: Full Uncapped Boost (Up to 3.5 GHz — Maximum Speed)";
                 _txtTurboDetail.Foreground = AccentAmber;
-                if (_txtTopTurboBadge != null) _txtTopTurboBadge.Text = "TURBO: 3.5 GHz MAX";
+                if (_txtTopTurboBadge != null) _txtTopTurboBadge.Text = "Turbo: 3.5 GHz Max";
             }
         }
 
         // =====================================================================
-        // AlDente Battery Charge Limiter (80% Cap)
+        // Hardware Battery Charge Limiter (80% Ceiling)
         // =====================================================================
         private int GetCurrentBatteryPercent()
         {
@@ -2797,8 +2877,8 @@ namespace MacAirControl
             if (_txtTopBattBadge != null)
             {
                 _txtTopBattBadge.Text = (_cfg.BatteryCapEnabled && !forceTopUp100)
-                    ? "ALDENTE: " + _cfg.BatteryCapPct + "% CAP"
-                    : "ALDENTE: 100% FULL";
+                    ? "Battery Limit: " + _cfg.BatteryCapPct + "%"
+                    : "Battery Limit: 100%";
             }
             _suppressSliderEvents = false;
 
@@ -2850,9 +2930,9 @@ namespace MacAirControl
 
             string acStr = onAc
                 ? ((_isChargingInhibited || (_cfg.BatteryCapEnabled && winPct >= _cfg.BatteryCapPct))
-                    ? "AC ONLINE (HELD AT " + _cfg.BatteryCapPct + "% ALDENTE CAP)"
-                    : "AC ONLINE (CHARGING)")
-                : "DISCHARGING ON BATTERY";
+                    ? "AC Power Connected (Held at " + _cfg.BatteryCapPct + "% Limit)"
+                    : "AC Power Connected (Charging)")
+                : "Running on Battery Power";
 
             string voltStr = (voltMv.HasValue && voltMv.Value > 5000 && voltMv.Value < 20000)
                 ? string.Format("{0:0.00} V", voltMv.Value / 1000.0)
@@ -2864,10 +2944,10 @@ namespace MacAirControl
 
             string cycStr = cycles.HasValue ? ((int)cycles.Value).ToString() : "N/A";
 
-            _txtBattStatusLine.Text = string.Format("BATTERY CHARGE: {0}%   •   {1}   •   {2}", winPct, acStr, voltStr);
-            _txtBattSmcState.Text = string.Format("SMC HARDWARE LIMIT (BCLM): {0}   •   CHARGE INHIBIT: {1}   •   CYCLE COUNT: {2}",
+            _txtBattStatusLine.Text = string.Format("Battery Charge: {0}%   •   {1}   •   {2}", winPct, acStr, voltStr);
+            _txtBattSmcState.Text = string.Format("Hardware Charge Ceiling (BCLM): {0}   •   Charge Pause: {1}   •   Cycle Count: {2}",
                 bclmStr,
-                _isChargingInhibited ? "ACTIVE (HOLD)" : "NORMAL",
+                _isChargingInhibited ? "Active (Paused)" : "Normal",
                 cycStr);
 
             if (_txtBattTilePct != null)    _txtBattTilePct.Text = winPct + "%";
@@ -2906,7 +2986,7 @@ namespace MacAirControl
         }
 
         // =====================================================================
-        // Periodic Telemetry Poll & Afterburner Cockpit Update
+        // Periodic Telemetry Poll & Dashboard Gauge Update
         // =====================================================================
         private void UpdateSensorTileBar(TextBlock txt, Border bar, double? val, Color normalCol)
         {
@@ -2930,7 +3010,7 @@ namespace MacAirControl
             if (!_smc.IsConnected)
             {
                 _smc.Connect();
-                _txtSmcStatus.Text = _smc.StatusMessage + "  •  MacBookAir9,1 (Core i5-1030NG7)";
+                _txtSmcStatus.Text = _smc.StatusMessage + "  •  MacBookAir9,1 (Intel Core i5-1030NG7)";
                 _txtSmcStatus.Foreground = _smc.IsConnected ? AccentGreen : AccentAmber;
             }
 
@@ -2985,29 +3065,29 @@ namespace MacAirControl
             }
             catch { }
 
-            // Update MSI Afterburner Left Dial (CPU Core & Clock)
+            // Update Left Dial (Processor Temperature & Clock)
             Color cpuDialCol = _lastCpuTemp >= 80 ? ColRed : (_lastCpuTemp >= 65 ? ColAmber : ColCyan);
             string turboBadge = _activeTurboMode == "Off" ? "SILENT 1.1 GHz"
-                              : (_activeTurboMode == "Sweet" ? "SWEET SPOT 2.2 GHz" : "FULL BOOST 3.5 GHz");
+                              : (_activeTurboMode == "Sweet" ? "BALANCED 2.2 GHz" : "MAX BOOST 3.5 GHz");
             _dialCpu.UpdateDial(
                 (_lastCpuTemp - 25.0) / 75.0,
                 _lastCpuTemp.ToString("0.0"),
                 string.Format("{0} MHz ({1:0.00} GHz)", _lastEstMhz, _lastEstMhz / 1000.0),
-                string.Format("CPU LOAD: {0:0}%", _lastCpuLoad),
+                string.Format("CPU Load: {0:0}%", _lastCpuLoad),
                 turboBadge,
                 cpuDialCol);
 
-            // Update MSI Afterburner Right Dial (Exhaust Turbine & Target)
+            // Update Right Dial (Cooling Fan Speed & Target)
             double fanPct = (_lastFanRpm - _fanMinRpm) / Math.Max(1.0, _fanMaxRpm - _fanMinRpm);
             fanPct = Math.Max(0.0, Math.Min(1.0, fanPct));
             string fanBadge = _cfg.FanMode == "Curve"
                 ? string.Format("SMART CURVE ({0}–{1}°C)", _cfg.CurveMinTemp, _cfg.CurveMaxTemp)
-                : (_cfg.FanMode == "Auto" ? "APPLE SMC AUTO" : "MANUAL CONSTANT");
+                : (_cfg.FanMode == "Auto" ? "FIRMWARE AUTO" : "MANUAL SPEED");
             _dialFan.UpdateDial(
                 fanPct,
                 _lastFanRpm.ToString("0"),
-                string.Format("TARGET: {0:0} RPM ({1:0}%)", _lastTargetRpm, fanPct * 100.0),
-                string.Format("BOUNDS: {0:0}–{1:0} RPM", _fanMinRpm, _fanMaxRpm),
+                string.Format("Target: {0:0} RPM ({1:0}%)", _lastTargetRpm, fanPct * 100.0),
+                string.Format("Range: {0:0}–{1:0} RPM", _fanMinRpm, _fanMaxRpm),
                 fanBadge,
                 ColMagenta);
 
@@ -3024,7 +3104,7 @@ namespace MacAirControl
 
             UpdateBatteryTelemetry();
 
-            string tip = string.Format("MacBook Air: CPU {0:0}°C | Fan {1:0} RPM | Cap {2}%",
+            string tip = string.Format("T2 Control: CPU {0:0}°C | Fan {1:0} RPM | Limit {2}%",
                 _lastCpuTemp, _lastFanRpm, _cfg.BatteryCapEnabled ? _cfg.BatteryCapPct : 100);
             if (tip.Length > 63) tip = tip.Substring(0, 63);
             _trayIcon.Text = tip;
@@ -3036,6 +3116,15 @@ namespace MacAirControl
         {
             try
             {
+                string quitFlag = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "quit_app.flag");
+                if (File.Exists(quitFlag))
+                {
+                    try { File.Delete(quitFlag); } catch { }
+                    _allowClose = true;
+                    Close();
+                    return;
+                }
+
                 string showFlag = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "show_window.flag");
                 if (File.Exists(showFlag))
                 {
@@ -3046,7 +3135,7 @@ namespace MacAirControl
                 string statusPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "live_status.txt");
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("Timestamp=" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                sb.AppendLine("UiTheme=Dark_Gotham_Gold_Afterburner");
+                sb.AppendLine("UiTheme=Clean_Dark_Gold_Professional");
                 sb.AppendLine("WindowVisible=" + (IsVisible && WindowState != WindowState.Minimized));
                 sb.AppendLine("SmcConnected=" + _smc.IsConnected);
                 sb.AppendLine("SmcStatus=" + _smc.StatusMessage);
