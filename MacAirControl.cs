@@ -882,7 +882,7 @@ namespace MacAirControl
             _cfg = AppConfig.Load();
             _smc = new AppleSmcClient();
 
-            Title = "T2 Hardware Control Center";
+            Title = "Helios T2 — Thermal, Processor & Battery Control";
             Width = 1050;
             Height = 840;
             MinWidth = 920;
@@ -1040,15 +1040,15 @@ namespace MacAirControl
             StackPanel spTitleRow = new StackPanel { Orientation = Orientation.Horizontal };
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = "T2 HARDWARE CONTROL CENTER ",
-                FontSize = 15.5,
+                Text = "HELIOS T2 ",
+                FontSize = 16,
                 FontWeight = FontWeights.Bold,
                 Foreground = TextPrimary
             });
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = " //  THERMAL, PROCESSOR & BATTERY",
-                FontSize = 14,
+                Text = " //  THERMAL, PROCESSOR & BATTERY CONTROL",
+                FontSize = 13.5,
                 FontWeight = FontWeights.SemiBold,
                 Foreground = AccentBlue,
                 VerticalAlignment = VerticalAlignment.Bottom
@@ -1151,7 +1151,7 @@ namespace MacAirControl
             DockPanel footerDock = new DockPanel();
             TextBlock txtFooterLeft = new TextBlock
             {
-                Text = "Direct T2 SMC Hardware Interface  •  Click the System Tray temperature icon anytime to show or hide",
+                Text = "HELIOS T2 v1.2  •  Built with AI assistance (zero coding skills)  •  Direct T2 SMC Hardware Interface",
                 FontFamily = new FontFamily("Segoe UI"),
                 FontSize = 11,
                 Foreground = TextMuted,
@@ -2543,7 +2543,7 @@ namespace MacAirControl
                 Font = new Drawing.Font("Segoe UI", 10f)
             };
 
-            var itemOpen = _trayMenu.Items.Add("Open T2 Hardware Control Center", null, (s, e) => RestoreFromTray());
+            var itemOpen = _trayMenu.Items.Add("Open Helios T2", null, (s, e) => RestoreFromTray());
             itemOpen.Font = new Drawing.Font("Segoe UI", 10f, Drawing.FontStyle.Bold);
             _trayMenu.Items.Add(new WinForms.ToolStripSeparator());
 
@@ -2573,7 +2573,7 @@ namespace MacAirControl
             });
             _trayMenu.Items.Add(new WinForms.ToolStripSeparator());
 
-            _trayMenu.Items.Add("Quit T2 Hardware Control Center", null, (s, e) =>
+            _trayMenu.Items.Add("Quit Helios T2", null, (s, e) =>
             {
                 _allowClose = true;
                 Close();
@@ -3104,7 +3104,7 @@ namespace MacAirControl
 
             UpdateBatteryTelemetry();
 
-            string tip = string.Format("T2 Control: CPU {0:0}°C | Fan {1:0} RPM | Limit {2}%",
+            string tip = string.Format("Helios T2: CPU {0:0}°C | Fan {1:0} RPM | Limit {2}%",
                 _lastCpuTemp, _lastFanRpm, _cfg.BatteryCapEnabled ? _cfg.BatteryCapPct : 100);
             if (tip.Length > 63) tip = tip.Substring(0, 63);
             _trayIcon.Text = tip;
