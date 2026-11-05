@@ -14,11 +14,11 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
-[assembly: AssemblyTitle("T2 Hardware Control Center Setup")]
-[assembly: AssemblyProduct("T2 Hardware Control Center")]
-[assembly: AssemblyCompany("Peter Karlsson")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyTitle("Helios T2 Setup")]
+[assembly: AssemblyProduct("Helios T2")]
+[assembly: AssemblyCompany("Peter Karlsson (Built with AI)")]
+[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]
 
 namespace MacAirControlSetup
 {
@@ -53,7 +53,7 @@ namespace MacAirControlSetup
         public SetupWindow(string version, bool autoUninstall)
         {
             _version = version;
-            Title = "T2 Hardware Control Center Setup v" + _version;
+            Title = "Helios T2 Setup v" + _version;
             Width = 680;
             Height = 560;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -127,18 +127,18 @@ namespace MacAirControlSetup
             StackPanel spTitleRow = new StackPanel { Orientation = Orientation.Horizontal };
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = "T2 HARDWARE CONTROL CENTER ",
-                FontSize = 15, FontWeight = FontWeights.Bold, Foreground = TextPrimary
+                Text = "HELIOS T2 ",
+                FontSize = 15.5, FontWeight = FontWeights.Bold, Foreground = TextPrimary
             });
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = "// INSTALLER v" + _version,
+                Text = "// SETUP WIZARD v" + _version,
                 FontSize = 15, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(ColGold)
             });
             spTitle.Children.Add(spTitleRow);
             spTitle.Children.Add(new TextBlock
             {
-                Text = "THERMAL FAN CURVE, PROCESSOR TURBO & 80% BATTERY LIMITER FOR WINDOWS",
+                Text = "THERMAL FAN CURVE, PROCESSOR TURBO & 80% BATTERY LIMITER  •  BUILT WITH AI",
                 FontFamily = new FontFamily("Consolas, Segoe UI"), FontSize = 10.5, Foreground = TextMuted,
                 Margin = new Thickness(0, 2, 0, 0)
             });
@@ -168,7 +168,7 @@ namespace MacAirControlSetup
             });
             _txtInstallDir = new TextBox
             {
-                Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "MacBookAirControlCenter"),
+                Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "HeliosT2"),
                 FontFamily = new FontFamily("Consolas, Segoe UI"), FontSize = 12.5,
                 Background = SubCardBg, Foreground = TextPrimary, BorderBrush = MutedBorder,
                 Padding = new Thickness(8, 6, 8, 6)
@@ -193,9 +193,9 @@ namespace MacAirControlSetup
             });
 
             _chkDriver    = CreateStyledCheck("Install & Start T2 SMC Kernel Driver (applesmc.sys — Required for Sensors, Fan & Battery)", true);
-            _chkShortcuts = CreateStyledCheck("Create Desktop & Start Menu Shortcuts (T2 Hardware Control Center)", true);
+            _chkShortcuts = CreateStyledCheck("Create Desktop & Start Menu Shortcuts (Helios T2)", true);
             _chkAutoStart = CreateStyledCheck("Start Automatically with Windows on AC & Battery (Via Scheduled Task)", true);
-            _chkLaunchNow = CreateStyledCheck("Launch T2 Hardware Control Center immediately after installation", true);
+            _chkLaunchNow = CreateStyledCheck("Launch Helios T2 immediately after installation", true);
 
             spOpt.Children.Add(_chkDriver);
             spOpt.Children.Add(_chkShortcuts);
@@ -221,8 +221,8 @@ namespace MacAirControlSetup
                 Background = new SolidColorBrush(Color.FromRgb(6, 7, 10)),
                 Foreground = new SolidColorBrush(ColChamp),
                 BorderBrush = MutedBorder, Padding = new Thickness(8),
-                Text = "Ready to install T2 Hardware Control Center v" + _version + ".\r\n" +
-                       "Designed for 2018-2020 T2-equipped laptops running Windows 10 or Windows 11.\r\n"
+                Text = "Ready to install Helios T2 v" + _version + ".\r\n" +
+                       "Built with AI assistance (zero coding skills) for 2018-2020 T2 laptops running Windows 10/11.\r\n"
             };
             body.Children.Add(_txtLog);
 
@@ -233,7 +233,7 @@ namespace MacAirControlSetup
 
             _btnInstall = new Button
             {
-                Content = "Install & Launch Control Center (v" + _version + ")",
+                Content = "Install & Launch Helios T2 (v" + _version + ")",
                 FontSize = 13.5, FontWeight = FontWeights.Bold,
                 Background = new SolidColorBrush(Color.FromArgb(75, ColGold.R, ColGold.G, ColGold.B)),
                 Foreground = TextPrimary, BorderBrush = new SolidColorBrush(ColGold),
@@ -344,19 +344,19 @@ namespace MacAirControlSetup
                     string icoPath = Path.Combine(targetDir, "app.ico");
                     string docPath = Path.Combine(targetDir, "README.md");
 
-                    Log("Extracting MacAirControl.exe (Gotham Gold Edition)...", 40);
+                    Log("Extracting Helios T2...", 40);
                     ExtractEmbeddedResource("MacAirControl.exe", exePath);
                     ExtractEmbeddedResource("applesmc.sys", sysPath);
                     ExtractEmbeddedResource("app.ico", icoPath);
                     ExtractEmbeddedResource("README.md", docPath);
 
                     // Copy self as uninstaller
-                    string uninstPath = Path.Combine(targetDir, "Uninstall_MacAirControl.exe");
+                    string uninstPath = Path.Combine(targetDir, "Uninstall_HeliosT2.exe");
                     try { File.Copy(Assembly.GetExecutingAssembly().Location, uninstPath, true); } catch { }
 
                     if (doDriver && File.Exists(sysPath))
                     {
-                        Log("Configuring & starting AppleSMC kernel driver...", 60);
+                        Log("Configuring & starting T2 SMC kernel driver...", 60);
                         RunCmd("sc.exe", "create AppleSMC binPath= \"" + sysPath + "\" type= kernel start= auto");
                         RunCmd("sc.exe", "config AppleSMC binPath= \"" + sysPath + "\" type= kernel start= auto");
                         RunCmd("sc.exe", "start AppleSMC");
@@ -373,8 +373,8 @@ namespace MacAirControlSetup
                     if (doShortcuts)
                     {
                         Log("Creating Desktop & Start Menu shortcuts...", 85);
-                        string deskLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), "MacBook Air Control Center.lnk");
-                        string startLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "MacBook Air Control Center.lnk");
+                        string deskLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), "Helios T2.lnk");
+                        string startLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "Helios T2.lnk");
                         CreateShortcut(deskLink, exePath, targetDir, icoPath);
                         CreateShortcut(startLink, exePath, targetDir, icoPath);
                     }
@@ -382,13 +382,13 @@ namespace MacAirControlSetup
                     // Register in Windows Add/Remove Programs
                     try
                     {
-                        using (RegistryKey k = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MacBookAirControlCenter"))
+                        using (RegistryKey k = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\HeliosT2"))
                         {
                             if (k != null)
                             {
-                                k.SetValue("DisplayName", "MacBook Air & T2 Control Center (Gotham Gold Edition)");
+                                k.SetValue("DisplayName", "Helios T2 — Thermal, Processor & Battery Control");
                                 k.SetValue("DisplayVersion", _version);
-                                k.SetValue("Publisher", "Peter Karlsson");
+                                k.SetValue("Publisher", "Peter Karlsson (Built with AI)");
                                 k.SetValue("DisplayIcon", icoPath);
                                 k.SetValue("InstallLocation", targetDir);
                                 k.SetValue("UninstallString", "\"" + uninstPath + "\" --uninstall");
@@ -399,7 +399,7 @@ namespace MacAirControlSetup
                     }
                     catch { }
 
-                    Log("SUCCESS! MacBook Air Control Center v" + _version + " is installed.", 100);
+                    Log("SUCCESS! Helios T2 v" + _version + " is installed.", 100);
 
                     if (doLaunch && File.Exists(exePath))
                     {
@@ -432,7 +432,7 @@ namespace MacAirControlSetup
             {
                 try
                 {
-                    Log("Stopping MacBook Air Control Center...", 25);
+                    Log("Stopping Helios T2...", 25);
                     RunCmd("schtasks.exe", "/End /TN \"MacBookAirControlCenter\"");
                     RunCmd("schtasks.exe", "/Delete /F /TN \"MacBookAirControlCenter\"");
                     foreach (Process p in Process.GetProcessesByName("MacAirControl"))
@@ -441,14 +441,14 @@ namespace MacAirControlSetup
                     }
 
                     Log("Removing Desktop & Start Menu shortcuts...", 60);
-                    string deskLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), "MacBook Air Control Center.lnk");
-                    string startLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "MacBook Air Control Center.lnk");
+                    string deskLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), "Helios T2.lnk");
+                    string startLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "Helios T2.lnk");
                     if (File.Exists(deskLink)) File.Delete(deskLink);
                     if (File.Exists(startLink)) File.Delete(startLink);
 
                     try
                     {
-                        Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MacBookAirControlCenter", false);
+                        Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\HeliosT2", false);
                     }
                     catch { }
 
