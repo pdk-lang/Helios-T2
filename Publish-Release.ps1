@@ -3,7 +3,7 @@ param(
     [switch]$BumpPatch,
     [switch]$BumpMinor,
     [switch]$BumpMajor,
-    [string]$ReleaseNotes = "Dark Gotham Gold Afterburner UI, Apple T2 SMC Fan Curve, Intel Turbo Sweet Spot and AlDente 80% Battery Limiter.",
+    [string]$ReleaseNotes = "Refined Dark Obsidian & Gold UI with built-in setting guides, T2 SMC Fan Curve control, Processor Clock Speed management, and 80% Battery Health Limiter.",
     [string]$GitHubToken = "",
     [string]$RepoName = "MacBookAir-T2-ControlCenter",
     [switch]$BuildOnly
@@ -135,7 +135,7 @@ if (-not $repoExists) {
     Write-Host "      Creating public GitHub repository '$owner/$RepoName'..." -ForegroundColor Cyan
     $createBody = @{
         name        = $RepoName
-        description = "MacBook Air and T2 Control Center (Gotham Gold // Afterburner Edition) - Native Fan Curve, Intel Turbo Boost and AlDente 80% Battery Limiter for Windows 10/11 Boot Camp"
+        description = "T2 Hardware Control Center - Native Fan Curve, Processor Clock Speed Management, and 80% Battery Health Limiter for Intel MacBooks running Windows 10/11"
         private     = $false
         auto_init   = $true
     } | ConvertTo-Json
@@ -194,10 +194,10 @@ $assetName = "MacBookAirControlCenter_Setup_v" + $currentVer + ".exe"
 
 if (-not $release) {
     Write-Host "      Creating GitHub Release $tag..." -ForegroundColor Cyan
-    $relMarkdown = "## MacBook Air & T2 Control Center v" + $currentVer + "`r`n`r`n" + $ReleaseNotes + "`r`n`r`n### Direct Installer Download`r`nDownload **" + $assetName + "** below and run it to install or upgrade."
+    $relMarkdown = "## T2 Hardware Control Center v" + $currentVer + "`r`n`r`n" + $ReleaseNotes + "`r`n`r`n### Direct Installer Download`r`nDownload **" + $assetName + "** below and run it to install or upgrade."
     $relBody = @{
         tag_name   = $tag
-        name       = ("MacBook Air & T2 Control Center v" + $currentVer + " (Gotham Gold Edition)")
+        name       = ("T2 Hardware Control Center v" + $currentVer)
         body       = $relMarkdown
         draft      = $false
         prerelease = $false
