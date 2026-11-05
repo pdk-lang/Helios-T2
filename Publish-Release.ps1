@@ -3,9 +3,9 @@ param(
     [switch]$BumpPatch,
     [switch]$BumpMinor,
     [switch]$BumpMajor,
-    [string]$ReleaseNotes = "Refined Dark Obsidian & Gold UI with built-in setting guides, T2 SMC Fan Curve control, Processor Clock Speed management, and 80% Battery Health Limiter.",
+    [string]$ReleaseNotes = "Helios T2 - Thermal Fan Curve, Processor Speed Manager & 80% Battery Health Limiter with built-in plain-English setting guides. Built with AI assistance (zero coding skills).",
     [string]$GitHubToken = "",
-    [string]$RepoName = "MacBookAir-T2-ControlCenter",
+    [string]$RepoName = "Helios-T2",
     [switch]$BuildOnly
 )
 
@@ -39,7 +39,7 @@ if ($Version -ne "") {
 
 [System.IO.File]::WriteAllText($verFile, $currentVer)
 Write-Host "=================================================================" -ForegroundColor Yellow
-Write-Host "  MacBook Air & T2 Control Center // Builder & GitHub Publisher  " -ForegroundColor Yellow
+Write-Host "  Helios T2 // Builder & GitHub Release Publisher                " -ForegroundColor Yellow
 Write-Host "  Target Version: v$currentVer                                   " -ForegroundColor Yellow
 Write-Host "=================================================================" -ForegroundColor Yellow
 
@@ -59,7 +59,7 @@ Write-Host "[1/3] Compiling MacAirControl.cs -> dist\MacAirControl.exe..." -Fore
     /out:"$stagingExe" `
     /win32icon:"$dir\app.ico" `
     /win32manifest:"$dir\app.manifest" `
-    /r:"$wpfDir\PresentationFramework.dll","$wpfDir\PresentationCore.dll","$wpfDir\WindowsBase.dll",System.Xaml.dll,System.dll,System.Drawing.dll,System.Windows.Forms.dll,System.ServiceProcess.dll `
+    /r:"$wpfDir\PresentationFramework.dll","$wpfDir\PresentationCore.dll","$wpfDir\WindowsBase.dll",System.Xaml.dll,System.Drawing.dll,System.Windows.Forms.dll,System.ServiceProcess.dll,System.dll `
     "$dir\MacAirControl.cs"
 
 if ($LASTEXITCODE -ne 0) {
@@ -69,8 +69,8 @@ if ($LASTEXITCODE -ne 0) {
 # -----------------------------------------------------------------------------
 # 3. Compile Self-Contained Standalone Installer (.exe)
 # -----------------------------------------------------------------------------
-$setupVersionedExe = Join-Path $distDir ("MacBookAirControlCenter_Setup_v" + $currentVer + ".exe")
-$setupLatestExe    = Join-Path $distDir "MacBookAirControlCenter_Setup_Latest.exe"
+$setupVersionedExe = Join-Path $distDir ("HeliosT2_Setup_v" + $currentVer + ".exe")
+$setupLatestExe    = Join-Path $distDir "HeliosT2_Setup_Latest.exe"
 
 Write-Host "[2/3] Building Standalone Setup Installer -> $setupVersionedExe..." -ForegroundColor Cyan
 & $csc /nologo /target:winexe `
@@ -113,13 +113,30 @@ if ([string]::IsNullOrWhiteSpace($GitHubToken)) {
 $headers = @{
     "Authorization" = "token $GitHubToken"
     "Accept"        = "application/vnd.github.v3+json"
-    "User-Agent"    = "MacBookAirControlCenter-Publisher"
+    "User-Agent"    = "HeliosT2-Publisher"
 }
 
 Write-Host "[3/3] Connecting to GitHub API..." -ForegroundColor Cyan
 $userResp = Invoke-RestMethod -Uri "https://api.github.com/user" -Headers $headers -Method Get
 $owner = $userResp.login
 Write-Host "      Authenticated as GitHub user: $owner" -ForegroundColor Green
+
+$repoDesc = "Helios T2 - Thermal Fan Curve, Processor Speed Manager & 80% Battery Limiter for T2 Laptops running Windows 10/11 (Built with AI)"
+
+# Check if old repo name exists and rename it to Helios-T2
+$oldRepoUrl = "https://api.github.com/repos/$owner/MacBookAir-T2-ControlCenter"
+try {
+    $oldRepo = Invoke-RestMethod -Uri $oldRepoUrl -Headers $headers -Method Get
+    if ($oldRepo.name -ne $RepoName) {
+        Write-Host "      Renaming repository '$($oldRepo.name)' -> '$RepoName'..." -ForegroundColor Cyan
+        $patchBody = @{
+            name        = $RepoName
+            description = $repoDesc
+        } | ConvertTo-Json
+        $null = Invoke-RestMethod -Uri $oldRepoUrl -Headers $headers -Method Patch -Body $patchBody -ContentType "application/json"
+        Start-Sleep -Seconds 2
+    }
+} catch { }
 
 # Ensure Repository Exists
 $repoUrl = "https://api.github.com/repos/$owner/$RepoName"
@@ -135,7 +152,7 @@ if (-not $repoExists) {
     Write-Host "      Creating public GitHub repository '$owner/$RepoName'..." -ForegroundColor Cyan
     $createBody = @{
         name        = $RepoName
-        description = "T2 Hardware Control Center - Native Fan Curve, Processor Clock Speed Management, and 80% Battery Health Limiter for Intel MacBooks running Windows 10/11"
+        description = $repoDesc
         private     = $false
         auto_init   = $true
     } | ConvertTo-Json
@@ -173,7 +190,7 @@ foreach ($relPath in $filesToUpload) {
     } catch { }
 
     $putBody = @{
-        message = ("Release v" + $currentVer + " - Update " + $relPath)
+        message = ("Helios T2 v" + $currentVer + " - Update " + $relPath)
         content = $b64
     }
     if ($existingSha) { $putBody["sha"] = $existingSha }
@@ -190,14 +207,14 @@ try {
     $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$owner/$RepoName/releases/tags/$tag" -Headers $headers -Method Get
 } catch { }
 
-$assetName = "MacBookAirControlCenter_Setup_v" + $currentVer + ".exe"
+$assetName = "HeliosT2_Setup_v" + $currentVer + ".exe"
 
 if (-not $release) {
     Write-Host "      Creating GitHub Release $tag..." -ForegroundColor Cyan
-    $relMarkdown = "## T2 Hardware Control Center v" + $currentVer + "`r`n`r`n" + $ReleaseNotes + "`r`n`r`n### Direct Installer Download`r`nDownload **" + $assetName + "** below and run it to install or upgrade."
+    $relMarkdown = "## Helios T2 v" + $currentVer + "`r`n`r`n" + $ReleaseNotes + "`r`n`r`n### Direct Installer Download`r`nDownload **" + $assetName + "** below and run it to install or upgrade."
     $relBody = @{
         tag_name   = $tag
-        name       = ("T2 Hardware Control Center v" + $currentVer)
+        name       = ("Helios T2 v" + $currentVer)
         body       = $relMarkdown
         draft      = $false
         prerelease = $false
