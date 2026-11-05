@@ -1,0 +1,9 @@
+# Runtime state & logs
+live_status.txt
+settings.ini
+show_window.flag
+quit_app.flag
+crash.log
+*.prev.exe
+.github_token
+Wallpapers/
