@@ -14,11 +14,11 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
-[assembly: AssemblyTitle("MacBook Air & T2 Control Center Setup")]
-[assembly: AssemblyProduct("MacBook Air Control Center (Gotham Gold Edition)")]
+[assembly: AssemblyTitle("T2 Hardware Control Center Setup")]
+[assembly: AssemblyProduct("T2 Hardware Control Center")]
 [assembly: AssemblyCompany("Peter Karlsson")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
 
 namespace MacAirControlSetup
 {
@@ -36,11 +36,11 @@ namespace MacAirControlSetup
 
         private readonly string _version;
 
-        // Dark Gotham Gold Palette
+        // Dark Gold Palette
         private static readonly Color ColGold    = Color.FromRgb(229, 184, 66);  // #E5B842 Sovereign Gold
         private static readonly Color ColCopper  = Color.FromRgb(217, 138, 43);  // #D98A2B Burnished Gold
         private static readonly Color ColChamp   = Color.FromRgb(238, 210, 125); // #EED27D Champagne Gold
-        private static readonly Color ColCrimson = Color.FromRgb(214, 54, 56);   // #D63638 Gotham Crimson
+        private static readonly Color ColCrimson = Color.FromRgb(214, 54, 56);   // #D63638 Crimson
 
         private static readonly Brush BgDeep      = new SolidColorBrush(Color.FromArgb(252, 7, 8, 11));
         private static readonly Brush CardBg      = new SolidColorBrush(Color.FromArgb(238, 15, 16, 21));
@@ -53,7 +53,7 @@ namespace MacAirControlSetup
         public SetupWindow(string version, bool autoUninstall)
         {
             _version = version;
-            Title = "MacBook Air & T2 Control Center Setup v" + _version;
+            Title = "T2 Hardware Control Center Setup v" + _version;
             Width = 680;
             Height = 560;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -127,18 +127,18 @@ namespace MacAirControlSetup
             StackPanel spTitleRow = new StackPanel { Orientation = Orientation.Horizontal };
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = " MACBOOK AIR CONTROL CENTER ",
+                Text = "T2 HARDWARE CONTROL CENTER ",
                 FontSize = 15, FontWeight = FontWeights.Bold, Foreground = TextPrimary
             });
             spTitleRow.Children.Add(new TextBlock
             {
-                Text = "// SETUP v" + _version,
+                Text = "// INSTALLER v" + _version,
                 FontSize = 15, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(ColGold)
             });
             spTitle.Children.Add(spTitleRow);
             spTitle.Children.Add(new TextBlock
             {
-                Text = "GOTHAM GOLD EDITION  •  APPLE T2 SMC FAN, TURBO & ALDENTE 80% BATTERY INSTALLER",
+                Text = "THERMAL FAN CURVE, PROCESSOR TURBO & 80% BATTERY LIMITER FOR WINDOWS",
                 FontFamily = new FontFamily("Consolas, Segoe UI"), FontSize = 10.5, Foreground = TextMuted,
                 Margin = new Thickness(0, 2, 0, 0)
             });
@@ -192,10 +192,10 @@ namespace MacAirControlSetup
                 Foreground = new SolidColorBrush(ColChamp), Margin = new Thickness(0, 0, 0, 8)
             });
 
-            _chkDriver    = CreateStyledCheck("Install & Start Apple T2 SMC Kernel Driver (applesmc.sys — Required for Sensors & Fan/Battery)", true);
-            _chkShortcuts = CreateStyledCheck("Create Desktop & Start Menu Shortcuts (MacBook Air Control Center)", true);
-            _chkAutoStart = CreateStyledCheck("Auto-Start with Windows on AC & Battery (Zero UAC Prompt via Scheduled Task)", true);
-            _chkLaunchNow = CreateStyledCheck("Launch MacBook Air Control Center immediately after installation", true);
+            _chkDriver    = CreateStyledCheck("Install & Start T2 SMC Kernel Driver (applesmc.sys — Required for Sensors, Fan & Battery)", true);
+            _chkShortcuts = CreateStyledCheck("Create Desktop & Start Menu Shortcuts (T2 Hardware Control Center)", true);
+            _chkAutoStart = CreateStyledCheck("Start Automatically with Windows on AC & Battery (Via Scheduled Task)", true);
+            _chkLaunchNow = CreateStyledCheck("Launch T2 Hardware Control Center immediately after installation", true);
 
             spOpt.Children.Add(_chkDriver);
             spOpt.Children.Add(_chkShortcuts);
@@ -221,8 +221,8 @@ namespace MacAirControlSetup
                 Background = new SolidColorBrush(Color.FromRgb(6, 7, 10)),
                 Foreground = new SolidColorBrush(ColChamp),
                 BorderBrush = MutedBorder, Padding = new Thickness(8),
-                Text = "Ready to install MacBook Air Control Center v" + _version + " (Gotham Gold Edition).\r\n" +
-                       "Compatible with Apple T2 MacBooks (MacBook Air 2018-2020 & MacBook Pro 2018-2020).\r\n"
+                Text = "Ready to install T2 Hardware Control Center v" + _version + ".\r\n" +
+                       "Designed for 2018-2020 T2-equipped laptops running Windows 10 or Windows 11.\r\n"
             };
             body.Children.Add(_txtLog);
 
@@ -233,7 +233,7 @@ namespace MacAirControlSetup
 
             _btnInstall = new Button
             {
-                Content = "⚡ INSTALL & LAUNCH CONTROL CENTER (v" + _version + ")",
+                Content = "Install & Launch Control Center (v" + _version + ")",
                 FontSize = 13.5, FontWeight = FontWeights.Bold,
                 Background = new SolidColorBrush(Color.FromArgb(75, ColGold.R, ColGold.G, ColGold.B)),
                 Foreground = TextPrimary, BorderBrush = new SolidColorBrush(ColGold),
@@ -246,7 +246,7 @@ namespace MacAirControlSetup
 
             _btnUninstall = new Button
             {
-                Content = "🗑️ UNINSTALL",
+                Content = "Uninstall",
                 FontSize = 12, FontWeight = FontWeights.Bold,
                 Background = SubCardBg, Foreground = new SolidColorBrush(ColCrimson),
                 BorderBrush = new SolidColorBrush(Color.FromArgb(120, ColCrimson.R, ColCrimson.G, ColCrimson.B)),
